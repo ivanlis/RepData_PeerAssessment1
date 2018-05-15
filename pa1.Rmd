@@ -1,0 +1,31 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+
+First, we check if the csv file is already unzipped. If it is not, unzip it into
+the data directory (the directory will be created if necessary).
+
+```{r echo=TRUE}
+if (!file.exists("data/activity.csv"))
+    unzip(zipfile = "./activity.zip", exdir = "data")
+```
+
+## What is mean total number of steps taken per day?
+
+
+
+## What is the average daily activity pattern?
+
+
+
+## Imputing missing values
+
+
+
+## Are there differences in activity patterns between weekdays and weekends?
