@@ -99,7 +99,8 @@ Let's substitute each missing value with the median of steps for the correspondi
 ```{r echo=TRUE}
 medianByInterval <- dataSet %>% group_by(interval) %>% summarize(medianSteps = median(steps, na.rm = TRUE))
 dataSet <- inner_join(dataSet, medianByInterval)
-
+dataSet$imputedSteps <- dataSet$steps
+dataSet$imputedSteps[is.na(dataSet$imputedSteps)] = dataSet$medianSteps[is.na(dataSet$imputedSteps)]
 ```
 
 
