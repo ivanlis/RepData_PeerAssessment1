@@ -28,12 +28,12 @@ dataSet <- read.csv(dataPathName, na.strings = "NA",
 We will use the *dplyr* package for summarizing data.
 Now we load it, and compute the total number of steps for each day observed.
 By now, let's discard missing values. This way the days with no valid step numbers
-will appear as having zero steps. Let's filter them out.
+will appear as having zero steps.
 
 ```{r echo=TRUE}
 library(dplyr)
 totalStepsByDay <- dataSet %>% group_by(date) %>% 
-    summarize(totalSteps = sum(steps)) %>% filter(totalSteps > 0)
+    summarize(totalSteps = sum(steps, na.rm = TRUE))
 ```
 
 Using the *ggplot2* package, we build the histogram of total number of steps taken
@@ -103,5 +103,29 @@ dataSet$imputedSteps <- dataSet$steps
 dataSet$imputedSteps[is.na(dataSet$imputedSteps)] = dataSet$medianSteps[is.na(dataSet$imputedSteps)]
 ```
 
+With the missing value having been imputed, we rebuild the histogram of total number of steps taken during the day.
+
+```{r echo=TRUE}
+totalStepsByDayImputed <- dataSet %>% group_by(date) %>% summarize(totalSteps = sum(imputedSteps))
+ggplot(data = totalStepsByDayImputed, aes(totalSteps)) +
+    geom_histogram(binwidth = 2000, col = "red", fill = "green") + 
+    labs(x = "steps per day")
+```
+
+Now we recalculate the mean and median of total steps per day.
+
+```{r echo=TRUE}
+meanTotalImputed <- mean(totalStepsByDayImputed$totalSteps)
+medianTotalImputed <- median(totalStepsByDayImputed$totalSteps)
+sprintf("mean: %f, median: %d", meanTotalImputed, medianTotalImputed)
+```
+
+In comparison with the previous analysis where we ignored missing values,
+the mean value has grown slightly. The median keeps its previous value.
+As we introduced median values instead of NAs, the values from the left extreme of the histogram
+have redistributed because some days "got" more steps.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Let's add a new categorical column saying if a given day is a weekday or weekend.
+
