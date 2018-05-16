@@ -80,6 +80,27 @@ avgByInterval[avgByInterval$avgSteps == max(avgByInterval$avgSteps), "interval"]
 
 ## Imputing missing values
 
+The initial data set contains certain number of missing values. Their number is output by the following code.
+
+```{r echo=TRUE}
+numRowsWithMissing <- sum(is.na(dataSet$steps))
+numRowsWithMissing
+```
+
+Therefore, the percentage of 5 minute intervals whose number of steps is missing is computed as
+
+```{r echo=TRUE}
+percentMissing <- 100 * numRowsWithMissing / nrow(dataSet)
+percentMissing
+```
+
+Let's substitute each missing value with the median of steps for the corresponding 5 minute interval.
+
+```{r echo=TRUE}
+medianByInterval <- dataSet %>% group_by(interval) %>% summarize(medianSteps = median(steps, na.rm = TRUE))
+dataSet <- inner_join(dataSet, medianByInterval)
+
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
